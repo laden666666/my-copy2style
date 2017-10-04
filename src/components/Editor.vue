@@ -129,6 +129,7 @@
         position: absolute;
         background: rgba(255, 0, 0, .3);
         box-sizing: border-box;
+        pointer-events: none;
     }
     .active-box.active-box_show {
         opacity: 1!important;
