@@ -1,7 +1,7 @@
 <template>
     <div id="app">
-        <Editor @change="change($event)"></Editor>
-        <CSSList :cssMap="cssMap"></CSSList>
+        <Editor ref="editor" @change="change($event)"></Editor>
+        <CSSList style="margin-left: 10px" :cssMap="cssMap" @enter="enter($event)" @leave="leave($event)"></CSSList>
     </div>
 </template>
 
@@ -22,6 +22,19 @@
             change($event){
                 this.cssMap = $event
             },
+            /**
+             * 样式表的鼠标hover
+             */
+            enter(key){
+                if(this.$refs.editor){
+                    this.$refs.editor.showActive(key)
+                }
+            },
+            leave(key){
+                if(this.$refs.editor){
+                    this.$refs.editor.hideActive(key)
+                }
+            },
         },
         components: {
             Editor,
@@ -31,12 +44,19 @@
 </script>
 
 <style>
-#app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
-}
+    html, body, #app{
+        height: 100%;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+    #app {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: #2c3e50;
+        display: flex;
+        padding: 10px;
+        box-sizing: border-box;
+    }
 </style>
