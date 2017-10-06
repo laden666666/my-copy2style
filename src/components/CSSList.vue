@@ -79,13 +79,13 @@
                     classList.push({
                         key: key,
                         className,
-                        styleList: this.cacheCssMap[key].filter(style=>style).map(style=>{
+                        styleList: this.cacheCssMap[key] ? this.cacheCssMap[key].filter(style=>style).map(style=>{
                             var arr = style.split(':')
                             return {
                                 key: arr.shift(),
                                 value: arr.join(':')
                             }
-                        })
+                        }) : []
                     })
                 }
                 return classList

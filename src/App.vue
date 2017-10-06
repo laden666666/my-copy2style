@@ -1,6 +1,7 @@
 <template>
     <div id="app">
         <Editor ref="editor" @change="change($event)"></Editor>
+        <ShowHTML style="margin-left: 10px" :html="html"></ShowHTML>
         <CSSList style="margin-left: 10px" :cssMap="cssMap" @enter="enter($event)" @leave="leave($event)"></CSSList>
     </div>
 </template>
@@ -8,11 +9,13 @@
 <script>
     import Editor from './components/Editor.vue'
     import CSSList from './components/CSSList.vue'
+    import ShowHTML from './components/ShowHTML.vue'
 
     export default {
         data: function () {
             return {
-                cssMap: {}
+                cssMap: {},
+                html: ''
             }
         },
         methods: {
@@ -20,7 +23,8 @@
              * 输入或粘贴事件
              */
             change($event){
-                this.cssMap = $event
+                this.cssMap = $event.domPathMap
+                this.html = $event.html
             },
             /**
              * 样式表的鼠标hover
@@ -38,7 +42,8 @@
         },
         components: {
             Editor,
-            CSSList
+            CSSList,
+            ShowHTML
         }
     }
 </script>

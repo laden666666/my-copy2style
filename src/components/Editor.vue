@@ -43,10 +43,15 @@
              * 输入或粘贴事件
              */
             editor(){
+                //生成剩余样式表
                 const domPathMap = {}
                 this.recursiveSearch('', domPathMap, this.$el.querySelector('.editor-container'))
 
-                this.$emit('change', domPathMap)
+                //生成剩余元素的html代码
+                var html = $(this.$el).find('.editor-container').clone().find('*').removeAttr('c2s-class').end().html()
+
+                //
+                this.$emit('change', {html, domPathMap})
             },
             /**
              * 递归查询样式
@@ -66,10 +71,15 @@
                         domPathMap[newDomPath] = $(elm).attr('style') ? $(elm).attr('style').split(';') : []
 
                         //去除行内样式，采用class样式
-                        $(elm).attr('style', '')
+                        $(elm).removeAttr('style')
+                        //移除id
+                        $(elm).removeAttr('id')
 
                         //生成的class默认值是路径名
                         $(elm).attr('class', newDomPath)
+
+                        //用生成的class做真正的样式绑定
+                        $(elm).attr('c2s-class', newDomPath)
 
                         //标记已经初始化过
                         $(elm).data('initialized', true)
@@ -122,6 +132,7 @@
 
     /*高亮显示元素信息*/
     .active {
+        z-index: 10000000;
     }
     .active-box {
         opacity: 0;
