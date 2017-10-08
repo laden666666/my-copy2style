@@ -84,7 +84,7 @@
                         //标记已经初始化过
                         $(elm).data('initialized', true)
                     } else {
-                        domPathMap[domPath] = true
+                        domPathMap[newDomPath] = true
                     }
                     this.recursiveSearch(newDomPath, domPathMap, elm)
                 })

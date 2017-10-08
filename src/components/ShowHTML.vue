@@ -20,7 +20,6 @@
         computed: {
             // 生成style标签
             formatHtml: function () {
-                console.log(pretty(this.html))
                 return  Prism.highlight(pretty(this.html), Prism.languages.html)
             },
         },

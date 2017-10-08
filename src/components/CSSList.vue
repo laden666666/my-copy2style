@@ -37,8 +37,8 @@
                 var newCacheCssMap = {};
                 //取this.cssMap和this.cacheCssMap的交集，key重复的表示已经初始化过了，取cacheCssMap的值
                 Object.keys(this.cssMap).forEach((key)=>{
-                    if(this.cacheCssMap[key]){
-                        newCacheCssMap[key] = this.cacheCssMap[key]
+                    if(this.cssMap[key] === true){
+                        newCacheCssMap[key] = this.cacheCssMap[key] || []
                     } else {
                         newCacheCssMap[key] = this.cssMap[key]
                     }
@@ -76,17 +76,19 @@
                 const classList =[]
                 for(let key in this.cacheCssMap){
                     var className = key.trim().split(' ').filter(str=>!!str).map(str=>'.' + str).join('')
-                    classList.push({
-                        key: key,
-                        className,
-                        styleList: this.cacheCssMap[key] ? this.cacheCssMap[key].filter(style=>style).map(style=>{
-                            var arr = style.split(':')
-                            return {
-                                key: arr.shift(),
-                                value: arr.join(':')
-                            }
-                        }) : []
-                    })
+                    if(Array.isArray(this.cacheCssMap[key])){
+                        classList.push({
+                            key: key,
+                            className,
+                            styleList: this.cacheCssMap[key] ? this.cacheCssMap[key].filter(style=>style).map(style=>{
+                                var arr = style.split(':')
+                                return {
+                                    key: arr.shift(),
+                                    value: arr.join(':')
+                                }
+                            }) : []
+                        })
+                    }
                 }
                 return classList
             },
