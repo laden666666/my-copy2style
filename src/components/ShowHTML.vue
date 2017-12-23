@@ -11,16 +11,13 @@
     require('prismjs/themes/prism.css')
 
     export default {
-        props:{
-            html: {
-                type: String,
-                required: true,
-            }
-        },
         computed: {
             // 生成style标签
             formatHtml: function () {
                 return  Prism.highlight(pretty(this.html), Prism.languages.html)
+            },
+            html: function () {
+                return  this.$store.state.state.html
             },
         },
     }

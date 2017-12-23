@@ -1,8 +1,11 @@
 <template>
     <div id="app">
-        <Editor ref="editor" @change="change($event)"></Editor>
-        <ShowHTML style="margin-left: 10px" :html="html"></ShowHTML>
-        <CSSList style="margin-left: 10px" :cssMap="cssMap" @enter="enter($event)" @leave="leave($event)"></CSSList>
+        <ToolsBox></ToolsBox>
+        <div class="views">
+            <Editor v-show="showEdit" ref="editor"></Editor>
+            <ShowHTML v-show="showHtml" style="margin-left: 10px"></ShowHTML>
+            <CSSList v-show="showStyle" style="margin-left: 10px"></CSSList>
+        </div>
     </div>
 </template>
 
@@ -10,40 +13,27 @@
     import Editor from './components/Editor.vue'
     import CSSList from './components/CSSList.vue'
     import ShowHTML from './components/ShowHTML.vue'
+    import ToolsBox from './components/ToolsBox.vue'
 
     export default {
-        data: function () {
-            return {
-                cssMap: {},
-                html: ''
-            }
-        },
         methods: {
-            /**
-             * 输入或粘贴事件
-             */
-            change($event){
-                this.cssMap = $event.domPathMap
-                this.html = $event.html
+        },
+        computed: {
+            showHtml: function () {
+                return this.$store.state.showHtml
             },
-            /**
-             * 样式表的鼠标hover
-             */
-            enter(key){
-                if(this.$refs.editor){
-                    this.$refs.editor.showActive(key)
-                }
+            showEdit: function () {
+                return this.$store.state.showEdit
             },
-            leave(key){
-                if(this.$refs.editor){
-                    this.$refs.editor.hideActive(key)
-                }
+            showStyle: function () {
+                return this.$store.state.showStyle
             },
         },
         components: {
             Editor,
             CSSList,
-            ShowHTML
+            ShowHTML,
+            ToolsBox
         }
     }
 </script>
@@ -57,11 +47,15 @@
         overflow: hidden;
     }
     #app {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
         color: #2c3e50;
+        display: flex;
+        box-sizing: border-box;
+        flex-direction: column;
+    }
+    .views{
         display: flex;
         padding: 10px;
         box-sizing: border-box;
+        flex: 1;
     }
 </style>

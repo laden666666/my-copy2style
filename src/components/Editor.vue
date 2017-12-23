@@ -12,17 +12,18 @@
                 width: activeBoxPosition.width + 'px',
                 height: activeBoxPosition.height + 'px',
             }">
-                <div class="active-line active-line-vertical"></div>
-                <div class="active-line active-line-vertical active-line-end"></div>
-                <div class="active-line"></div>
-                <div class="active-line active-line-end"></div>
+                <div class="active-horizontal-line" style="top: 0"></div>
+                <div class="active-horizontal-line" style="bottom: 0"></div>
+                <div class="active-vertical-line" style="right: 0"></div>
+                <div class="active-vertical-line" style="left: 0"></div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import $ from 'jquery'
+    import editService from '../service/editService'
+    import {mapState} from 'vuex'
     export default {
         data () {
             return {
@@ -38,56 +39,38 @@
 
             }
         },
+        computed:{
+            ...mapState({
+                html(state){
+                    return state.state.html
+                },
+                recycle(state){
+                    return state.recycle.length
+                },
+                activeId(state){
+                    return state.activeId
+                },
+            })
+        },
+        watch:{
+            'recycle': function(newValue, oldValue){
+                if(oldValue.length != 0 && newValue.length != 0)
+                    this.$el.querySelector('.editor-container').innerHTML = this.html
+            },
+            'activeId': function(newValue, oldValue){
+                if(oldValue && !newValue){
+                    this.hideActive()
+                } else if(!oldValue && newValue){
+                    this.showActive(newValue)
+                }
+            },
+        },
         methods: {
             /**
              * 输入或粘贴事件
              */
             editor(){
-                //生成剩余样式表
-                const domPathMap = {}
-                this.recursiveSearch('', domPathMap, this.$el.querySelector('.editor-container'))
-
-                //生成剩余元素的html代码
-                var html = $(this.$el).find('.editor-container').clone().find('*').removeAttr('c2s-class').end().html()
-
-                //
-                this.$emit('change', {html, domPathMap})
-            },
-            /**
-             * 递归查询样式
-             * @param domPath
-             * @param domPathMap
-             * @param elm
-             */
-            recursiveSearch(domPath, domPathMap, elm){
-                //如果不是元素对象，直接跳过
-                if(elm.nodeType != 1)
-                    return
-
-                //循环遍历子元素，获取子元素样式
-                Array.from($(elm).children()).forEach((elm ,i)=>{
-                    const newDomPath = domPath + elm.tagName.toLowerCase() + i
-                    if($(elm).data('initialized') != true){
-                        domPathMap[newDomPath] = $(elm).attr('style') ? $(elm).attr('style').split(';') : []
-
-                        //去除行内样式，采用class样式
-                        $(elm).removeAttr('style')
-                        //移除id
-                        $(elm).removeAttr('id')
-
-                        //生成的class默认值是路径名
-                        $(elm).attr('class', newDomPath)
-
-                        //用生成的class做真正的样式绑定
-                        $(elm).attr('c2s-class', newDomPath)
-
-                        //标记已经初始化过
-                        $(elm).data('initialized', true)
-                    } else {
-                        domPathMap[newDomPath] = true
-                    }
-                    this.recursiveSearch(newDomPath, domPathMap, elm)
-                })
+                editService.edit(this.$el.querySelector('.editor-container'))
             },
             showActive(key){
                 const activeDom = document.getElementsByClassName(key)[0]
@@ -103,11 +86,12 @@
                     this.$el.scrollTop = clientRect.top
                 }
             },
-            hideActive(key){
+            hideActive(){
                 this.isShowActive = false
             },
         },
     }
+
 </script>
 
 <style scoped>
@@ -145,29 +129,21 @@
     .active-box.active-box_show {
         opacity: 1!important;
     }
-    .active-line {
-        top: 0;
-        left: 0;
-        width: 10000px;
+    .active-horizontal-line{
+        left: 50%;
+        width: 5000px;
         height: 0;
         border: dashed rgba(255, 0, 0, .7) 1px;
         transform: translateX(-50%);
         position: absolute;
         pointer-events: none;
     }
-    .active-line.active-line-end{
-        top: auto;
-        bottom: 0;
-    }
-    .active-line.active-line-vertical {
-        width: 0;
-        height: 10000px;
+    .active-vertical-line{
+        top: 50%;
+        height: 5000px;
         transform: translateY(-50%);
-    }
-    .active-line.active-line-vertical.active-line-end{
-        left: auto;
-        right: 0;
-        top: 0;
-        bottom: auto;
+        border: dashed rgba(255, 0, 0, .7) 1px;
+        position: absolute;
+        pointer-events: none;
     }
 </style>

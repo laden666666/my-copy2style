@@ -5,16 +5,16 @@
 
         <!--样式列表，供用户查看-->
         <ul class="cssList-list">
-            <li class="cssList-item" v-for="item in classList" :key="item.key" @mouseenter="enter(item.key)" @mouseleave="leave(item.key)">
+            <li class="cssList-item" v-for="item in styleList" :key="item.id" @mouseenter="enter(item.id)" @mouseleave="leave(item.id)">
                 <div class="cssList-className">
                     {{item.className}}
                     <span class="cssList-bracket">{</span>
                 </div>
-                <ul class="cssList-styleList" v-for="style in item.styleList">
+                <ul class="cssList-styleList" v-for="(value, key) in item.styleList" :key="item.id + '|' + key">
                     <li class="cssList-styleItem">
-                        <span class="cssList-styleItemName">{{style.key}}</span>
+                        <span class="cssList-styleItemName">{{key}}</span>
                         :
-                        <span class="cssList-styleItemValue">{{style.value}}</span>
+                        <span class="cssList-styleItemValue">{{value}}</span>
                         ;
                     </li>
                 </ul>
@@ -25,80 +25,42 @@
 </template>
 
 <script>
+    import editService from '../service/editService'
     export default {
-        props:{
-            cssMap: {
-                type: Object,
-                required: true,
-            }
-        },
-        watch: {
-            cssMap: function () {
-                var newCacheCssMap = {};
-                //取this.cssMap和this.cacheCssMap的交集，key重复的表示已经初始化过了，取cacheCssMap的值
-                Object.keys(this.cssMap).forEach((key)=>{
-                    if(this.cssMap[key] === true){
-                        newCacheCssMap[key] = this.cacheCssMap[key] || []
-                    } else {
-                        newCacheCssMap[key] = this.cssMap[key]
-                    }
-                })
-                this.cacheCssMap = newCacheCssMap
-            },
-        },
         methods: {
             enter(key){
-                this.$emit('enter', key)
+                editService.setActiveById(key)
             },
             leave(key){
-                this.$emit('leave', key)
+                editService.setInactiveById(key)
             },
         },
         computed: {
+            cssMap(){
+                return this.styleList.reduce((map, style)=>{
+                    map[style.id] = style
+                    return map
+                }, {})
+            },
             // 生成style标签
             styleTag: function () {
 
                 var styleTagHtml = ''
-                for(let key in this.cacheCssMap){
-                    if(Array.isArray(this.cacheCssMap[key])){
-                        var className = key.trim().split(' ').filter(str=>!!str).map(str=>'.' + str).join('')
-                        styleTagHtml +=  `${className}{
-                            ${this.cacheCssMap[key].join(';')}
-                        }`
-                    }
+                for(let key in this.cssMap){
+                    var style = this.cssMap[key]
+                    var className = style.className
+                    var styleKeys = Object.keys(style.styleList)
+                    styleTagHtml +=  `[c2s-class='${className}']{
+                        ${styleKeys.map(key=>key + ':' + style.styleList[key]).join(';')}
+                    }`
                 }
                 return `<style type="text/css">${styleTagHtml}</style>`
             },
-            //重命名的样式标签
-
             // 生成style标签
-            classList: function () {
-                const classList =[]
-                for(let key in this.cacheCssMap){
-                    var className = key.trim().split(' ').filter(str=>!!str).map(str=>'.' + str).join('')
-                    if(Array.isArray(this.cacheCssMap[key])){
-                        classList.push({
-                            key: key,
-                            className,
-                            styleList: this.cacheCssMap[key] ? this.cacheCssMap[key].filter(style=>style).map(style=>{
-                                var arr = style.split(':')
-                                return {
-                                    key: arr.shift(),
-                                    value: arr.join(':')
-                                }
-                            }) : []
-                        })
-                    }
-                }
-                return classList
+            styleList: function () {
+                return this.$store.state.state.styleList
             },
         },
-        data () {
-            return {
-                //克隆一份props缓存
-                cacheCssMap: {...this.cssMap}
-            }
-        }
     }
 </script>
 
