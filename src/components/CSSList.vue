@@ -7,7 +7,7 @@
         <ul class="cssList-list">
             <li class="cssList-item" v-for="item in styleList" :key="item.id" @mouseenter="enter(item.id)" @mouseleave="leave(item.id)">
                 <div class="cssList-className">
-                    {{item.className}}
+                    .{{item.className}}
                     <span class="cssList-bracket">{</span>
                 </div>
                 <ul class="cssList-styleList" v-for="(value, key) in item.styleList" :key="item.id + '|' + key">
