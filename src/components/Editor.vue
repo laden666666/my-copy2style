@@ -1,5 +1,5 @@
 <template>
-    <div class="editor">
+    <div class="editor" ref="editer">
         <!--用于粘贴dom元素-->
         <div class="editor-container" contenteditable="true" @input="editor">
         </div>
@@ -75,15 +75,26 @@
             showActive(key){
                 const activeDom = document.getElementsByClassName(key)[0]
                 if(activeDom){
+                    this.$el.scrollTop = 0;
+
                     const clientRect = activeDom.getClientRects()[0];
+                    const editer = this.$refs.editer;
+                    const editerClientRect = editer.getClientRects()[0];
 
                     ['top', 'left', 'width', 'height'].forEach(key=>{
                         this.activeBoxPosition[key] = clientRect[key]
                     })
+
+                    //计算editer横向滚动条的宽度
+
+                    this.activeBoxPosition.top = 
+                        Math.max(editerClientRect.top, 
+                            clientRect.top - editer.scrollHeight + editerClientRect.height - editer.offsetHeight + editer.clientHeight)
+
                     this.isShowActive = true
 
                     //计算滚动条位置，将滚动条移到高亮位置
-                    this.$el.scrollTop = clientRect.top
+                    this.$el.scrollTop = clientRect.top - editerClientRect.top
                 }
             },
             hideActive(){

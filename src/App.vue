@@ -2,8 +2,8 @@
     <div id="app">
         <ToolsBox></ToolsBox>
         <div class="views">
-            <Editor v-show="showEdit" ref="editor"></Editor>
-            <ShowHTML v-show="showHtml" style="margin-left: 10px"></ShowHTML>
+            <Editor id="editor" v-show="showEdit" ref="editor"></Editor>
+            <ShowHTML id="showHTML" v-show="showHtml" style="margin-left: 10px"></ShowHTML>
             <CSSList v-show="showStyle" style="margin-left: 10px"></CSSList>
         </div>
     </div>
@@ -14,6 +14,10 @@
     import CSSList from './components/CSSList.vue'
     import ShowHTML from './components/ShowHTML.vue'
     import ToolsBox from './components/ToolsBox.vue'
+    import $ from 'jquery'
+
+    window.$ = $
+    
 
     export default {
         methods: {

@@ -4,8 +4,8 @@
         <div v-html="styleTag"></div>
 
         <!--样式列表，供用户查看-->
-        <ul class="cssList-list">
-            <li class="cssList-item" v-for="item in styleList" :key="item.id" @mouseenter="enter(item.id)" @mouseleave="leave(item.id)">
+        <ul class="cssList-list" id="cssList">
+            <li class="cssList-item" v-for="item in styleList" :key="item.id" @mousemove="enter(item.id)" @mouseleave="leave(item.id)">
                 <div class="cssList-className">
                     .{{item.className}}
                     <span class="cssList-bracket">{</span>
