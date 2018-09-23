@@ -17,17 +17,17 @@ copy2style是个web样式获取工具，它能够将copy下来的页面文字或
 用浏览器打开要获取样式的页面，鼠标选择要复制的文字或布局。如果对方页面有**user-select:none**的设置用**f12的开发者工具**将其去除。
 以bootcss网站为例，我们复制其中一个文本的样式
 
-![image](https://github.com/laden666666/my-copy2style/blob/master/img/step1.png)
+![image](./img/step1.png)
 
 ### 第二步，将内容粘贴到工具页面
 打开[工具页面](https://laden666666.github.io/my-copy2style/ "Title")，将刚才复制的样式粘贴进入工具页面左边的富文本框。如下图，页面的样式基本和原网站一样。
 
-![image](https://github.com/laden666666/my-copy2style/blob/master/img/step2.png)
+![image](./img/step2.png)
 
 ### 第三步，选择目标元素的css样式
 根据工具页面右侧的样式表，选择合适的部分，copy到你自己的页面中
 
-![image](https://github.com/laden666666/my-copy2style/blob/master/img/step3.png)
+![image](./img/step3.png)
 
 # 郑重声明
 >此工具仅限学习交流使用，同时希望大家不要抄袭别人的设计，抄袭者会被永远钉在耻辱柱上。
